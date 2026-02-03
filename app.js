@@ -1,4 +1,6 @@
-// Recipe data - Foundation for all 4 parts
+// =======================
+// Recipe Data (Part 1–4 Foundation)
+// =======================
 const recipes = [
     {
         id: 1,
@@ -66,37 +68,126 @@ const recipes = [
     }
 ];
 
+// =======================
+// State
+// =======================
+let currentFilter = "all";
+let currentSort = "none";
+
+// =======================
 // DOM Selection
-const recipeContainer = document.querySelector('#recipe-container');
-console.log(recipeContainer);
+// =======================
+const recipeContainer = document.querySelector("#recipe-container");
+const filterButtons = document.querySelectorAll("[data-filter]");
+const sortButtons = document.querySelectorAll("[data-sort]");
 
-// Create recipe card HTML
-const createRecipeCard = (recipe) => {
-    return `
-        <div class="recipe-card" data-id="${recipe.id}">
-            <h3>${recipe.title}</h3>
-            <div class="recipe-meta">
-                <span>⏱️ ${recipe.time} min</span>
-                <span class="difficulty ${recipe.difficulty}">
-                    ${recipe.difficulty}
-                </span>
-            </div>
-            <p>${recipe.description}</p>
+// =======================
+// Create Recipe Card
+// =======================
+const createRecipeCard = (recipe) => `
+    <div class="recipe-card" data-id="${recipe.id}">
+        <h3>${recipe.title}</h3>
+        <div class="recipe-meta">
+            <span>⏱️ ${recipe.time} min</span>
+            <span class="difficulty ${recipe.difficulty}">
+                ${recipe.difficulty}
+            </span>
         </div>
-    `;
-};
+        <p>${recipe.description}</p>
+    </div>
+`;
 
-// Render recipes
+// =======================
+// Render Recipes
+// =======================
 const renderRecipes = (recipesToRender) => {
-    const recipeCardsHTML = recipesToRender
+    recipeContainer.innerHTML = recipesToRender
         .map(createRecipeCard)
-        .join('');
-
-    recipeContainer.innerHTML = recipeCardsHTML;
+        .join("");
 };
 
-// Initialize App
-console.log('Total recipes:', recipes.length);
-console.log('First recipe:', recipes[0]);
-renderRecipes(recipes);
-console.log('Rendering complete!');
+// =======================
+// Filter Functions (PURE)
+// =======================
+const applyFilter = (recipes, filter) => {
+    switch (filter) {
+        case "easy":
+        case "medium":
+        case "hard":
+            return recipes.filter(r => r.difficulty === filter);
+        case "quick":
+            return recipes.filter(r => r.time < 30);
+        default:
+            return recipes;
+    }
+};
+
+// =======================
+// Sort Functions (PURE)
+// =======================
+const applySort = (recipes, sort) => {
+    switch (sort) {
+        case "name":
+            return [...recipes].sort((a, b) =>
+                a.title.localeCompare(b.title)
+            );
+        case "time":
+            return [...recipes].sort((a, b) => a.time - b.time);
+        default:
+            return recipes;
+    }
+};
+
+// =======================
+// Update Display
+// =======================
+const updateDisplay = () => {
+    let result = recipes;
+    result = applyFilter(result, currentFilter);
+    result = applySort(result, currentSort);
+    renderRecipes(result);
+
+    console.log(
+        `Displaying ${result.length} recipes (Filter: ${currentFilter}, Sort: ${currentSort})`
+    );
+};
+
+// =======================
+// Active Button Styling
+// =======================
+const updateActiveButtons = () => {
+    filterButtons.forEach(btn =>
+        btn.classList.toggle("active", btn.dataset.filter === currentFilter)
+    );
+
+    sortButtons.forEach(btn =>
+        btn.classList.toggle("active", btn.dataset.sort === currentSort)
+    );
+};
+
+// =======================
+// Event Listeners
+// =======================
+const setupEventListeners = () => {
+    filterButtons.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            currentFilter = e.target.dataset.filter;
+            updateActiveButtons();
+            updateDisplay();
+        });
+    });
+
+    sortButtons.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            currentSort = e.target.dataset.sort;
+            updateActiveButtons();
+            updateDisplay();
+        });
+    });
+};
+
+// =======================
+// Initialization
+// =======================
+setupEventListeners();
+updateDisplay();

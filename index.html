@@ -20,8 +20,32 @@
         <div id="recipe-container"></div>
         <!-- Recipe cards will be rendered here by JavaScript -->
      </main>
+       <h1>🍽 RecipeJS – Functional Cooking Companion</h1>
+
+  <!-- Controls -->
+  <div class="controls">
+
+    <div class="filters">
+      <button data-filter="all" class="active">Show All</button>
+      <button data-filter="easy">Easy</button>
+      <button data-filter="medium">Medium</button>
+      <button data-filter="hard">Hard</button>
+      <button data-filter="quick">Quick Recipes</button>
+    </div>
+
+    <div class="sorts">
+      <button data-sort="none" class="active">Default</button>
+      <button data-sort="name">Name (A–Z)</button>
+      <button data-sort="time">Time (Fastest)</button>
+    </div>
+
+  </div>
+
+  <!-- Recipe Container -->
+  <div id="recipe-container"></div>
     
     <!-- TODO: Link your JavaScript file here -->
      <script src="app.js"></script>
+
 </body>
 </html>
